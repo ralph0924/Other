@@ -1,0 +1,23 @@
+Sub DeleteUnwantedColumns()
+    Dim ws As Worksheet
+    Dim col As Long
+    Set ws = ActiveSheet
+
+    ' Loop backwards from IE (243) to A (1)
+    For col = 243 To 1 Step -1
+
+        ' Keep A–E (columns 1–5)
+        If col <= 5 Then
+            ' keep
+
+        ' Keep F (6) and every 3rd column after (9, 12, 15…)
+        ElseIf (col - 6) Mod 3 = 0 Then
+            ' keep
+
+        ' Delete everything else
+        Else
+            ws.Columns(col).Delete
+        End If
+
+    Next col
+End Sub
