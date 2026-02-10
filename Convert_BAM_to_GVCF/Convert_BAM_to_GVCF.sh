@@ -1,4 +1,4 @@
-cd /mnt/storage-HDD01/1.scrach/bioinfo-ralph/2.projects/BAM2PRS_test/Data/BAM
+cd /mnt/storage-HDD01/1.scrach/bioinfo-ralph/2.projects/BAM2PRS_test/Ref_data/BAM
 
 for i in *.bam; do
     sif=/home/main-SSD04/0.software/sif-images_apptainer
@@ -12,7 +12,7 @@ for i in *.bam; do
             -R ${ref} \
             -I ${i} \
             -L ${bed} \
-            -O "/mnt/storage-HDD01/1.scrach/bioinfo-ralph/2.projects/BAM2PRS_test/Data/GVCF/${i%.bam}.g.vcf.gz" \
+            -O "/mnt/storage-HDD01/1.scrach/bioinfo-ralph/2.projects/BAM2PRS_test/Ref_data/GVCF/${i%.bam}.g.vcf.gz" \
             -ERC GVCF \
             --dbsnp ${dbsnp} \
             --standard-min-confidence-threshold-for-calling 30.0 \
