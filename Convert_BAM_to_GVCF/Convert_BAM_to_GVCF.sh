@@ -21,6 +21,7 @@ for i in *.bam; do
     
 done
 
+cd /mnt/storage-HDD01/1.scrach/bioinfo-ralph/2.projects/BAM2PRS_test/Ref_data/GVCF
 
 for i in *.g.vcf.gz; do
     bcftools sort \
