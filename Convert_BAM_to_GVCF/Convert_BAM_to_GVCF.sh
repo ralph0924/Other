@@ -3,7 +3,7 @@ cd /mnt/storage-HDD01/1.scrach/bioinfo-ralph/2.projects/BAM2PRS_test/Data/BAM
 for i in *.bam; do
     sif=/home/main-SSD04/0.software/sif-images_apptainer
     ref=/home/main-SSD04/1.database/human/illumina_hg38/GRCh38_genome.fa
-    bed=/home/main-SSD04/2.pipeline/BAM-2-PRS_BreastCancer77SNPs-1.3.0/resources/bca-77snps_zero-based_hg38_GCF_000001405.40.annotated.bed
+    bed=/home/main-SSD04/2.pipeline/BAM-2-PRS_BreastCancer77SNPs-1.5.0/resources/bca-77snps_zero-based_hg38_GCF_000001405.40.annotated.bed
     dbsnp=/home/main-SSD04/1.database/human/dbsnp/grch38/build156/GCF_000001405.40.annotated.chrnames-without-chr.gz
     
     apptainer exec --bind /mnt:/mnt --bind /home:/home \
