@@ -1,1 +1,63 @@
-#
+cd <working_directory>
+wrk_dir=$(pwd)
+
+mkdir -p BAM
+mkdir -p GVCF
+mkdir -p VCF
+cd BAM
+
+###################################################################################################
+
+for i in *.bam; do
+    sif=/home/main-SSD04/0.software/sif-images_apptainer
+    ref="/mnt/storage-HDD01/1.scrach/bioinfo-ralph/CRAM_1kg_30x/GRCh38_reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa"
+    bed=/mnt/storage-HDD01/1.scrach/bioinfo-ralph/2.projects/PRS313/CRAM2BAM/script/PRS_SNPs_hg38_zero_base.bed
+    dbsnp=/mnt/storage-HDD05a/2.SNParrayDBs/dbsnp_vcf_build156/GRCh38/GCF_000001405.40.annotated.chrnames-with-chr.gz
+    
+    apptainer exec --bind /mnt:/mnt --bind /home:/home \
+        ${sif}/gatk_4.6.2.0.sif \
+        gatk HaplotypeCaller \
+            -R ${ref} \
+            -I ${i} \
+            -L ${bed} \
+            -O "${wrk_dir}/GVCF/${i%.bam}.g.vcf.gz" \
+            -ERC GVCF \
+            --dbsnp ${dbsnp} \
+            --standard-min-confidence-threshold-for-calling 30.0 \
+            --mapping-quality-threshold-for-genotyping 20 \
+            --base-quality-score-threshold 18
+    
+done
+
+###################################################################################################
+
+cd ${wrk_dir}/GVCF
+
+for i in *.g.vcf.gz; do
+    bcftools sort \
+        -Oz \
+        -o "${i%.g.vcf.gz}_sorted.g.vcf.gz" \
+        "${i}"
+
+    tabix "${i%.g.vcf.gz}_sorted.g.vcf.gz"
+
+    rm ${i}*
+done
+
+###################################################################################################
+
+cd ${wrk_dir}/VCF
+
+apptainer exec --bind /mnt:/mnt --bind /home:/home \
+        ${sif}/gatk_4.6.2.0.sif \
+        gatk HaplotypeCaller \
+            -R ${ref} \
+            -I ${i} \
+            -L ${bed} \
+            -O "${wrk_dir}/GVCF/${i%.bam}.g.vcf.gz" \
+            -ERC GVCF \
+            --dbsnp ${dbsnp} \
+            --standard-min-confidence-threshold-for-calling 30.0 \
+            --mapping-quality-threshold-for-genotyping 20 \
+            --base-quality-score-threshold 18
+
