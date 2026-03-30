@@ -49,15 +49,15 @@ done
 cd ${wrk_dir}/VCF
 
 apptainer exec --bind /mnt:/mnt --bind /home:/home \
-        ${sif}/gatk_4.6.2.0.sif \
-        gatk HaplotypeCaller \
-            -R ${ref} \
-            -I ${i} \
-            -L ${bed} \
-            -O "${wrk_dir}/GVCF/${i%.bam}.g.vcf.gz" \
-            -ERC GVCF \
-            --dbsnp ${dbsnp} \
-            --standard-min-confidence-threshold-for-calling 30.0 \
-            --mapping-quality-threshold-for-genotyping 20 \
-            --base-quality-score-threshold 18
+    ${sif}/gatk_4.6.2.0.sif \
+    gatk HaplotypeCaller \
+        -R ${ref} \
+        -I ${i} \
+        -L ${bed} \
+        -O "${wrk_dir}/GVCF/${i%.bam}.g.vcf.gz" \
+        -ERC GVCF \
+        --dbsnp ${dbsnp} \
+        --standard-min-confidence-threshold-for-calling 30.0 \
+        --mapping-quality-threshold-for-genotyping 20 \
+        --base-quality-score-threshold 18
 
