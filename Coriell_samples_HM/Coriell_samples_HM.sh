@@ -8,6 +8,9 @@ cd BAM
 
 ###################################################################################################
 
+# Convert BAM to GVCF
+cd BAM
+
 for i in *.bam; do
     sif=/home/main-SSD04/0.software/sif-images_apptainer
     ref="/mnt/storage-HDD01/1.scrach/bioinfo-ralph/CRAM_1kg_30x/GRCh38_reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa"
@@ -31,6 +34,7 @@ done
 
 ###################################################################################################
 
+# Sort GVCF
 cd ${wrk_dir}/GVCF
 
 for i in *.g.vcf.gz; do
@@ -46,18 +50,25 @@ done
 
 ###################################################################################################
 
+# Merge GVCF
 cd ${wrk_dir}/VCF
 
 apptainer exec --bind /mnt:/mnt --bind /home:/home \
     ${sif}/gatk_4.6.2.0.sif \
-    gatk HaplotypeCaller \
-        -R ${ref} \
-        -I ${i} \
-        -L ${bed} \
-        -O "${wrk_dir}/GVCF/${i%.bam}.g.vcf.gz" \
-        -ERC GVCF \
-        --dbsnp ${dbsnp} \
-        --standard-min-confidence-threshold-for-calling 30.0 \
-        --mapping-quality-threshold-for-genotyping 20 \
-        --base-quality-score-threshold 18
+    gatk CombineGVCFs \
+        -R "${ref}" \
+        ${GVCF_LIST} \
+        ${GVCF_REF_LIST} \
+        -V "${fvcf_path}" \
+        -O "${out_dir}/2.output-combine/cohort_sorted.g.vcf.gz"
 
+###################################################################################################
+
+# Joint Genotyping
+apptainer exec --bind /mnt:/mnt --bind /home:/home \
+    ${sif}/gatk_4.6.2.0.sif \
+    gatk GenotypeGVCFs \
+        -R "${ref}" \
+        --dbsnp "${dbsnp}" \
+        -V "${out_dir}/2.output-combine/cohort_sorted.g.vcf.gz" \
+        -O "${out_dir}/3.output-vcf/cohort_sorted.vcf.gz"
