@@ -75,5 +75,5 @@ apptainer exec --bind /mnt:/mnt --bind /home:/home \
     gatk GenotypeGVCFs \
         -R "${ref}" \
         --dbsnp "${dbsnp}" \
-        -V "${out_dir}/2.output-combine/cohort_sorted.g.vcf.gz" \
-        -O "${out_dir}/3.output-vcf/cohort_sorted.vcf.gz"
+        -V "${wrk_dir}/VCF/cohort_sorted.g.vcf.gz" \
+        -O "${wrk_dir}/VCF/cohort_sorted.vcf.gz"
