@@ -1,5 +1,9 @@
 cd <working_directory>
 wrk_dir=$(pwd)
+sif=/home/main-SSD04/0.software/sif-images_apptainer
+ref="/mnt/storage-HDD01/1.scrach/bioinfo-ralph/CRAM_1kg_30x/GRCh38_reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa"
+bed=/mnt/storage-HDD01/1.scrach/bioinfo-ralph/2.projects/PRS313/CRAM2BAM/script/PRS_SNPs_hg38_zero_base.bed
+dbsnp=/mnt/storage-HDD05a/2.SNParrayDBs/dbsnp_vcf_build156/GRCh38/GCF_000001405.40.annotated.chrnames-with-chr.gz
 
 mkdir -p BAM
 mkdir -p GVCF
@@ -12,11 +16,7 @@ cd BAM
 cd BAM
 
 for i in *.bam; do
-    sif=/home/main-SSD04/0.software/sif-images_apptainer
-    ref="/mnt/storage-HDD01/1.scrach/bioinfo-ralph/CRAM_1kg_30x/GRCh38_reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa"
-    bed=/mnt/storage-HDD01/1.scrach/bioinfo-ralph/2.projects/PRS313/CRAM2BAM/script/PRS_SNPs_hg38_zero_base.bed
-    dbsnp=/mnt/storage-HDD05a/2.SNParrayDBs/dbsnp_vcf_build156/GRCh38/GCF_000001405.40.annotated.chrnames-with-chr.gz
-    
+
     apptainer exec --bind /mnt:/mnt --bind /home:/home \
         ${sif}/gatk_4.6.2.0.sif \
         gatk HaplotypeCaller \
@@ -51,20 +51,25 @@ done
 ###################################################################################################
 
 # Merge GVCF
-cd ${wrk_dir}/VCF
+GVCF_LIST=""
+for counts_file in *_sorted.g.vcf.gz; do
+    GVCF_LIST+="-V ${counts_file} "
+done
 
 apptainer exec --bind /mnt:/mnt --bind /home:/home \
     ${sif}/gatk_4.6.2.0.sif \
     gatk CombineGVCFs \
         -R "${ref}" \
         ${GVCF_LIST} \
-        ${GVCF_REF_LIST} \
-        -V "${fvcf_path}" \
-        -O "${out_dir}/2.output-combine/cohort_sorted.g.vcf.gz"
+        -O "${wrk_dir}/VCF/cohort_sorted.g.vcf.gz"
+
+tabix ${wrk_dir}/VCF/cohort_sorted.g.vcf.gz
 
 ###################################################################################################
 
 # Joint Genotyping
+cd ${wrk_dir}/VCF
+
 apptainer exec --bind /mnt:/mnt --bind /home:/home \
     ${sif}/gatk_4.6.2.0.sif \
     gatk GenotypeGVCFs \
