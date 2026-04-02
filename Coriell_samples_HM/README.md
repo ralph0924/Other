@@ -11,3 +11,8 @@ This script is ran manually (i.e. copy and pasting each line to the terminal)
 
 ### VCF analysed
 Once the VCF of all the desired Coriell samples is created, get all the GT of each sample and determine what combination of Coriell samples achieves the most ALT allele within the list of desired SNPs.
+
+### Determining combinantion of Coriell samples to have at least 1 sample that have an ALT allele for all included SNPs/INDEL
+The file from G drive under the file path below lists all the samples that can be sequence to cover as much of the SNPs/INDEL as possible. This list was created by looking at the GT of all available Coriell sample by first identifying the one with the most ALT allele then using IF statement that when that sample is homozygous ref which other sample will cover the other SNPs. This is repeated until all SNPs are covered.
+
+G:\NGS\Bioinformatics\06a.Projects\RDX24-025a - Breast Cancer PRS\BOADICEA\Helena_Coriell_List\Total ALT counts 1KG.xlsx
